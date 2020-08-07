@@ -1,5 +1,6 @@
 package com.herokuapp.favsongslist.service;
 
+import com.herokuapp.favsongslist.model.Song;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,16 +25,14 @@ public class SongsService {
         headersEntity = new HttpEntity<>("body", headers);
     }
 
-    public JSONObject getSongInfo(String artist, String song) {
+    public Song getSongInfo(String artist, String song) {
         String searchParam = getSearchParam(artist, song);
 
         int id = getSongId(searchParam);
 
         JSONObject json = new JSONObject(getSong(id));
 
-        System.out.println(json);
-
-        return json;
+        return createSongObject(json.getJSONObject("response").getJSONObject("song"));
     }
 
     private String getSearchParam(String artist, String song) {
@@ -65,4 +64,19 @@ public class SongsService {
         return response.getBody();
     }
 
+    private Song createSongObject(JSONObject json) {
+        Song song = new Song();
+
+        song.setId(json.getLong("id"));
+
+        song.setArtist(json.getJSONObject("album").getJSONObject("artist").getString("name"));
+
+        song.setTitle(json.getString("title"));
+
+        song.setAlbumName(json.getJSONObject("album").getString("name"));
+
+        song.setSongArtUrl(json.getString("song_art_image_thumbnail_url"));
+
+        return song;
+    }
 }

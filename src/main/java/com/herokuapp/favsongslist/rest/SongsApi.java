@@ -1,5 +1,6 @@
 package com.herokuapp.favsongslist.rest;
 
+import com.herokuapp.favsongslist.model.Song;
 import com.herokuapp.favsongslist.service.SongsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +20,8 @@ public class SongsApi {
     }
 
     @GetMapping(value = "song", params = {"artist", "song"})
-    public Map<String, Object> getSongInfo(@RequestParam("artist") String artist, @RequestParam("song") String song) {
-        return service.getSongInfo(artist, song).toMap();
+    public Song getSongInfo(@RequestParam("artist") String artist, @RequestParam("song") String song) {
+        return service.getSongInfo(artist, song);
     }
 
 }

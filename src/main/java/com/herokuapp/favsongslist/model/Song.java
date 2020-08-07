@@ -12,6 +12,8 @@ public class Song {
 
     private String songArtUrl;
 
+    public Song() {}
+
     public Song(Long id, String artist, String title, String albumName, String songArtUrl) {
         this.id = id;
         this.artist = artist;
