@@ -22,4 +22,5 @@ public class SongsApi {
     public Map<String, Object> getSongInfo(@RequestParam("artist") String artist, @RequestParam("song") String song) {
         return service.getSongInfo(artist, song).toMap();
     }
+
 }
