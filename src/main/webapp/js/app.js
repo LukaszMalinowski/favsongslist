@@ -1,5 +1,5 @@
 const URL = window.location.href;
-const SONG_URL = `${URL}api/song`
+const SONG_URL = `${URL}api/song`;
 
 const form = document.getElementById("form");
 
@@ -12,8 +12,15 @@ form.addEventListener("submit",event => {
 })
 
 function requestSong() {
-    const artist = document.getElementById("artist").value;
-    const song = document.getElementById("song").value;
+    let artistInput = document.getElementById("artist");
+    const artist = artistInput.value;
+    artistInput.value = "";
+
+    let songInput = document.getElementById("song");
+    const song = songInput.value;
+    songInput.value = "";
+
+
 
     const fetchURL = `${SONG_URL}?artist=${artist}&song=${song}`;
 
@@ -28,9 +35,22 @@ function addCardItem(json) {
     const albumName = json.albumName;
     const songArtUrl = json.songArtUrl;
 
-    let li = document.createElement("li");
+    let card = document.createElement("div");
+    
+    card.innerHTML = `
+        <div class="col mb-4">
+            <div class="card text-white bg-dark mb-3">
+                <img src="${songArtUrl}" class="card-img-top" alt="${title}">
+                <div class="card-header">${artist}</div>
+                <div class="card-body">
+                    <h5 class="card-title">${title}</h5>
+                    <p class="card-text">Album: ${albumName}</p>
+                </div>
+            </div>
+        </div>
+    `;
 
-    li.innerHTML=`<img src="${songArtUrl}">`;
+    console.log(card.innerHTML);
 
-    document.getElementById("playlist").appendChild(li);
+    document.getElementById("playlist").appendChild(card);
 }
