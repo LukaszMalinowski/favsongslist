@@ -1,5 +1,6 @@
 package com.herokuapp.favsongslist.service;
 
+import com.herokuapp.favsongslist.exception.SongNotFoundException;
 import com.herokuapp.favsongslist.model.Song;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -25,12 +26,18 @@ public class SongsService {
         headersEntity = new HttpEntity<>("body", headers);
     }
 
-    public Song getSongInfo(String artist, String song) {
+    public Song getSongInfo(String artist, String song) throws SongNotFoundException {
         String searchParam = getSearchParam(artist, song);
 
-        int id = getSongId(searchParam);
+        JSONObject json = null;
 
-        JSONObject json = new JSONObject(getSong(id));
+        try {
+            int id = getSongId(searchParam);
+
+            json = new JSONObject(getSong(id));
+        } catch (SongNotFoundException ex) {
+            throw ex;
+        }
 
         return createSongObject(json.getJSONObject("response").getJSONObject("song"));
     }
@@ -42,17 +49,24 @@ public class SongsService {
         return artist + "+" + song;
     }
 
-    private int getSongId(String searchParam) {
-        ResponseEntity<String> response = restTemplate.exchange(GENIUS_SEARCH_URL + searchParam, HttpMethod.GET,
-                                                                headersEntity, String.class);
+    private int getSongId(String searchParam) throws SongNotFoundException {
+        int id = -1;
 
-        JSONObject json = new JSONObject(response.getBody());
+        //TODO add better exception handling 
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(GENIUS_SEARCH_URL + searchParam, HttpMethod.GET,
+                                                                    headersEntity, String.class);
 
-        int id = json.getJSONObject("response")
-                        .getJSONArray("hits")
-                        .getJSONObject(0)
-                        .getJSONObject("result")
-                        .getInt("id");
+            JSONObject json = new JSONObject(response.getBody());
+
+            id = json.getJSONObject("response")
+                         .getJSONArray("hits")
+                         .getJSONObject(0)
+                         .getJSONObject("result")
+                         .getInt("id");
+        } catch (Exception ex) {
+            throw new SongNotFoundException("Song not found");
+        }
 
         return id;
     }
