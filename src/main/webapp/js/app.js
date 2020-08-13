@@ -7,8 +7,10 @@ form.addEventListener("submit",event => {
     event.preventDefault();
 
     requestSong()
+        .then(checkStatus)
         .then(response => response.json())
-        .then(addCardItem);
+        .then(addCardItem)
+        .catch(handleError);
 })
 
 function requestSong() {
@@ -53,4 +55,17 @@ function addCardItem(json) {
     console.log(card.innerHTML);
 
     document.getElementById("playlist").appendChild(card);
+}
+
+function checkStatus(response) {
+    if(response.ok) {
+        return Promise.resolve(response);
+    } else {
+        return Promise.reject(new Error(response.statusText));
+    }
+}
+
+function handleError(error) {
+    console.log(error);
+    alert("Song not found.");
 }
