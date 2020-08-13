@@ -46,13 +46,15 @@ public class SongsService {
         ResponseEntity<String> response = restTemplate.exchange(GENIUS_SEARCH_URL + searchParam, HttpMethod.GET,
                                                                 headersEntity, String.class);
 
+        System.out.println(response);
+
         JSONObject json = new JSONObject(response.getBody());
 
         int id = json.getJSONObject("response")
-                        .getJSONArray("hits")
-                        .getJSONObject(0)
-                        .getJSONObject("result")
-                        .getInt("id");
+                     .getJSONArray("hits")
+                     .getJSONObject(0)
+                     .getJSONObject("result")
+                     .getInt("id");
 
         return id;
     }
