@@ -52,7 +52,7 @@ public class SongsService {
     private int getSongId(String searchParam) throws SongNotFoundException {
         int id = -1;
 
-        //TODO add better exception handling 
+        //TODO add better exception handling
         try {
             ResponseEntity<String> response = restTemplate.exchange(GENIUS_SEARCH_URL + searchParam, HttpMethod.GET,
                                                                     headersEntity, String.class);
